@@ -21,7 +21,16 @@
             </tr>
         </thead>
         <tbody>
-            
+            @forelse ($guests as $guest)
+            <tr>
+                <th scope="row">{{ $guest->id }}</th>
+                <td>{{ $guest->name }}</td>
+                <td>{{ $guest->message }}</td>
+                <td>{{ $guest->email }}</td>
+                <td>{{ $guest->phone_number }}</td>
+                <td>{{ $guest->created_at }}</td>
+                <td>{{ $guest->updated_at }}</td>
+            </tr>
         </tbody>
 
     </table>
