@@ -4,15 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\Guest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class GuestController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
+    public function __construct()
+     {
+        $this->middleware('auth')->except('index'); //seluruh fungsi hrs melewati auth kecuali index
+    }
+
     public function index()
     {
-        return view('guest.index');
+        // $guests = Guest::all();
+        $guests = Guest::paginate(10);
+        return view('guests.index', compact('guests'));
     }
 
     /**
@@ -40,11 +49,11 @@ class GuestController extends Controller
             $request->validate([
                 'avatar' => 'image|mimes:jpeg,png,jpg,gif,svg,webp,svg|max:2048',
             ]);
-            $imagePath = $request->file('avatar')->store('public/');
+            $imagePath = $request->file('avatar')->storePublicly('public/images');
             $validated['avatar'] = $imagePath;
         }
 
-        $guest = Guest::create([
+        Guest::create([
             'name'=> $validated['name'],
             'message'=> $validated['message'],
             'email'=> $validated['email'],
@@ -52,7 +61,7 @@ class GuestController extends Controller
             'avatar'=> $validated['avatar'] ?? null,
         ]);
 
-        return $guest;
+        return redirect()->route('guests.index')->with('success', 'Guest added succesfully');
     }
 
     /**
@@ -60,7 +69,7 @@ class GuestController extends Controller
      */
     public function show(Guest $guest)
     {
-        return view('guests.show');
+        return view('guests.show', compact('guest'));
     }
 
     /**
@@ -68,7 +77,7 @@ class GuestController extends Controller
      */
     public function edit(Guest $guest)
     {
-        return view('guests.edit');
+        return view('guests.edit', compact('guest'));
     }
 
     /**
@@ -76,7 +85,36 @@ class GuestController extends Controller
      */
     public function update(Request $request, Guest $guest)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'message' => 'required|string|max:255',
+            'email' => 'email|string|max:255',
+            'phone_number' => 'string|max:13'
+        ]);
+
+        if($request->hasFile('avatar')){
+            $request->validate([
+                'avatar' => 'image|mimes:jpeg,png,jpg,gif,svg,webp,svg|max:2048',
+            ]);
+            $imagePath = $request->file('avatar')->storePublicly('public/images');
+
+            //Hapus file existing
+            if($guest->avatar){
+                Storage::delete($guest->avatar);
+            }
+
+            $validated['avatar'] = $imagePath;
+        }
+
+        $guest->update([
+            'name' => $validated['name'],
+            'message' => $validated['message'],
+            'email' => $validated['email'],
+            'phone_number' => $validated['phone_number'],
+            'avatar' => $validated['avatar'] ?? $guest->avatar,
+        ]);
+
+        return redirect()->route('guests.index')->with('success', 'Guest update succesfully');
     }
 
     /**
@@ -84,6 +122,10 @@ class GuestController extends Controller
      */
     public function destroy(Guest $guest)
     {
-        //
+        if($guest->avatar){
+            Storage::delete($guest->avatar);
+        }
+        $guest->delete();
+        return redirect()->route('guests.index')->with('success', 'Guest delete succesfully');
     }
 }

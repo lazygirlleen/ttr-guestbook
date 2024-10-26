@@ -6,22 +6,23 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
     public function index()
     {
-        $guest_name = "Iwak";
-        return view('home' , compact('guest_name'));
-    }
-
-    public function getGuest($id, $serial_number =-1)
-    {
-        return view('guest-detail', compact('id', 'serial_number'));
-    }
-
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|min:10'
-        ]);
-        return $request->name;
+        return view('home');
     }
 }

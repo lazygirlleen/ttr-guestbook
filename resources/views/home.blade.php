@@ -1,21 +1,28 @@
-@extends('layouts.template')
+@extends('layouts.app')
 
-@section('title', 'Home | Guestbook')
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">{{ __('Dashboard') }}</div>
 
-@section('body')
-    <div class="container">
-    <h1>Welcome {{ $guest_name }}!</h1>
+                <div class="card-body">
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif
 
-    <form action="" method="POST">
-        @csrf()
+                    @guest
+                    {{ __('Please log in!') }}
+                    @else
+                        {{ __('You are logged in!') }}
+                    @endguest
 
-        <label for="name" class="form-label">Guest Name</label>
-        <input type="text" class="form-control" id="name" name="name"/>
-
-        <br>
-
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
+</div>
 @endsection
