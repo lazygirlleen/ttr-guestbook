@@ -29,7 +29,7 @@
             </div>
 
             <div class="form-group">
-                    <label for="guest_name">Guest category</label>
+                    <label for="guest_name">Guest Category</label>
                     <select class="form-select form-select-lg mb-3" name="category_id">
                         <option value="">No Category</option>
                         @foreach ($categories as $category)
@@ -37,6 +37,17 @@
                             {{ $category->name }}</option>
                         @endforeach
                     </select>
+
+
+            <div class="form-group">
+                    <label for="guest_name">Guest Tags</label>
+                    <select class="form-select form-select-lg mb-3" name="tags[]" multiple>
+                        @foreach ($tags as $tag)
+                            <option value="{{ $tag->id }}" {{ $guest->tags->contains($tag->id) ? "selected" : "" }}>
+                            {{ $tag->name }}</option>
+                        @endforeach
+                    </select>
+            </div>
             </div>
 
             <div class="form-group">

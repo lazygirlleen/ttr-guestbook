@@ -26,6 +26,7 @@
                 <th scope="col">ID</th>
                 <th scope="col">Name</th>
                 <th scope="col">Category</th>
+                <th scope="col">Tags</th>
                 <th scope="col">Message</th>
                 <th scope="col">Email</th>
                 <th scope="col">Phone Number</th>
@@ -47,6 +48,11 @@
                 {{ $guest->category?->name ?? 'No category' }}
                 <!-- mau ambil objek category yang terhubung dengan objek guest -->
                 <!-- dia akan menampilkan nama category jika ada, kalau gak ada tampilkan teks null category -->
+                </td>
+                <td>
+                @foreach ($guest->tags as $tag)
+                    <span class="badge bg-primary">{{ $tag->name }}</span>
+                @endforeach
                 </td>
                 <td>{{ Str::limit($guest->message, 50, '...') }}</td>
                 <td>{{ $guest->email }}</td>

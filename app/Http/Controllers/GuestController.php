@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Guest;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -31,9 +32,11 @@ class GuestController extends Controller
     public function create()
     {
         $categories = Category::all();
+        $tags = Tag::all();
         //mengambil seluruh data category yang tersimpan di database
-        return view('guests.create', compact('categories'));
+        return view('guests.create', compact('categories', 'tags'));
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -57,7 +60,7 @@ class GuestController extends Controller
             $validated['avatar'] = $imagePath;
         }
 
-        Guest::create([
+        $guest = Guest::create([
             'name'=> $validated['name'],
             'message'=> $validated['message'],
             'email'=> $validated['email'],
@@ -66,6 +69,11 @@ class GuestController extends Controller
             'category_id'=> $validated['category_id'] ?? null,
             //memastikan agar tetao kosong
         ]);
+
+        if($request->has('tags')) {
+            $guest->tags()->attach($request->input('tags'));
+        }
+        //ini adalah array id_tag dari user
 
         return redirect()->route('guests.index')->with('success', 'Guest added succesfully');
     }
@@ -84,7 +92,8 @@ class GuestController extends Controller
     public function edit(Guest $guest)
     {
         $categories = Category::all();
-        return view('guests.edit', compact('guest', 'categories'));
+        $tags = Tag::all();
+        return view('guests.edit', compact('guest', 'categories', 'tags'));
     }
 
     /**
@@ -122,6 +131,12 @@ class GuestController extends Controller
             'avatar' => $validated['avatar'] ?? $guest->avatar,
             'category_id'=> $validated['category_id'] ?? null,
         ]);
+
+        if($request->has('tags')) {
+            $guest->tags()->sync($request->input('tags'));
+        }
+        //sync untuk memperbaharui relasinya
+        //akan secara otomatis mencari data id atau data fk yang sebelumnya ada kalau misalnya ada yang sam agak akan dihapus
 
         return redirect()->route('guests.index')->with('success', 'Guest update succesfully');
     }

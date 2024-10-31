@@ -35,6 +35,12 @@ class Guest extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+
+    //kalau many to many harus plural
     //sebetulnya dalam pemanggila fungsi fungsi seperti ini kalau misalnya temen temen declare nama fk beda dari standar laravel
     //gak akan bisa jalan dengan benar relasinya
     //supaya bisa terkait nanti di setiap fungsi-fungsi relasi cek aja karena butuh beberapa parameter yang dimasukin
