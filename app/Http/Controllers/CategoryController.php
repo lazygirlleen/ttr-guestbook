@@ -10,9 +10,15 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function index()
     {
-        //
+        $categories = Category::paginate(10);
+        return view('categories.index', compact('categories'));
     }
 
     /**
@@ -20,7 +26,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view( 'categories.create');
     }
 
     /**
@@ -28,7 +34,14 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|min:3|max:255',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        Category::create($validated);
+
+        return redirect()->route('categories.index')->with('Success', 'Category created successfully');
     }
 
     /**
@@ -44,7 +57,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        //
+        return view( 'categories.edit', compact('category'));
     }
 
     /**
@@ -52,7 +65,14 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|min:3|max:255',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        $category->update($validated);
+
+        return redirect()->route('categories.index')->with('Success', 'Category updated successfully');
     }
 
     /**
@@ -60,6 +80,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        $category->delete();
+        return redirect()->route('category.index')->with('success', 'Category delete succesfully');
     }
 }

@@ -29,6 +29,17 @@
             </div>
 
             <div class="form-group">
+                    <label for="guest_name">Guest category</label>
+                    <select class="form-select form-select-lg mb-3" name="category_id">
+                        <option value="">No Category</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}" {{ $category->id == $guest->category_id ? "selected" : "" }}>
+                            {{ $category->name }}</option>
+                        @endforeach
+                    </select>
+            </div>
+
+            <div class="form-group">
                     <label for="guest_name">Message</label>
                     <input type="text" class="form-control" id="message" placeholder="Message" name="message" required value="{{ old('message', $guest->message) }}">
             </div>

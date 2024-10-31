@@ -22,9 +22,22 @@
         <form action="{{ route('guests.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
+
             <div class="form-group">
                     <label for="guest_name">Guest Name</label>
                     <input type="text" class="form-control" id="guest_name" placeholder="Guest Name" name="name" required value="{{ old('name') }}">
+            </div>
+
+            <div class="form-group">
+                    <label for="guest_name">Guest category</label>
+                    <select class="form-select form-select-lg mb-3" name="category_id">
+                        <option value="">No Category</option>
+                        @foreach ($categories as $category)
+                            <!-- var array of category sebagai variable category -->
+                            <option value="{{ $category->id }}">
+                            {{ $category->name }}</option>
+                        @endforeach
+                    </select>
             </div>
 
             <div class="form-group">

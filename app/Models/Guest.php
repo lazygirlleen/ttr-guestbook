@@ -14,7 +14,8 @@ class Guest extends Model
         'message',
         'email',
         'phone_number',
-        'avatar'
+        'avatar',
+        'category_id'
     ];
 
     protected $append = [

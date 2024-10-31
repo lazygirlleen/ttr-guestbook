@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Guest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -29,7 +30,9 @@ class GuestController extends Controller
      */
     public function create()
     {
-        return view('guests.create');
+        $categories = Category::all();
+        //mengambil seluruh data category yang tersimpan di database
+        return view('guests.create', compact('categories'));
     }
 
     /**
@@ -42,7 +45,8 @@ class GuestController extends Controller
             'name' => 'required|string|max:255',
             'message' => 'required|string|max:255',
             'email' => 'email|string|max:255',
-            'phone_number' => 'string|max:13'
+            'phone_number' => 'string|max:13',
+            'category_id' => 'nullable|exists:categories,id' //tambahkan nama tabelnya
         ]);
 
         if($request->hasFile('avatar')){
@@ -59,6 +63,8 @@ class GuestController extends Controller
             'email'=> $validated['email'],
             'phone_number'=> $validated['phone_number'],
             'avatar'=> $validated['avatar'] ?? null,
+            'category_id'=> $validated['category_id'] ?? null,
+            //memastikan agar tetao kosong
         ]);
 
         return redirect()->route('guests.index')->with('success', 'Guest added succesfully');
@@ -77,7 +83,8 @@ class GuestController extends Controller
      */
     public function edit(Guest $guest)
     {
-        return view('guests.edit', compact('guest'));
+        $categories = Category::all();
+        return view('guests.edit', compact('guest', 'categories'));
     }
 
     /**
@@ -89,7 +96,8 @@ class GuestController extends Controller
             'name' => 'required|string|max:255',
             'message' => 'required|string|max:255',
             'email' => 'email|string|max:255',
-            'phone_number' => 'string|max:13'
+            'phone_number' => 'string|max:13',
+            'category_id' => 'nullable|exists:categories,id'
         ]);
 
         if($request->hasFile('avatar')){
@@ -112,6 +120,7 @@ class GuestController extends Controller
             'email' => $validated['email'],
             'phone_number' => $validated['phone_number'],
             'avatar' => $validated['avatar'] ?? $guest->avatar,
+            'category_id'=> $validated['category_id'] ?? null,
         ]);
 
         return redirect()->route('guests.index')->with('success', 'Guest update succesfully');

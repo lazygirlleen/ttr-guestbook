@@ -32,5 +32,15 @@ class DatabaseSeeder extends Seeder
                 'created_at' => $created_at,
             ]);
         }
+
+        $tags= [
+            ['name' => 'state', 'created_at' => now()],
+            ['name' => 'honorable', 'created_at' => now()],
+            ['name' => 'uninvinted', 'created_at' => now()],
+            ['name' => 'family', 'created_at' => now()],
+            ['name' => 'friends', 'created_at' => now()],
+        ];
+
+        DB::table('tags')->insert($tags);
     }
 }
